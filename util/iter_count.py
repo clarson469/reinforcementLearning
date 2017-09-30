@@ -6,9 +6,6 @@ class IterCount(object):
         self.msg = msg
         self.length = len(msg) + 6
 
-    def __del__(self):
-        print('\nDone!\n')
-
     def update(self):
         self.count += 1
         self.print_msg()
@@ -17,3 +14,6 @@ class IterCount(object):
         sys.stdout.write(self.msg.format(self.count))
         sys.stdout.write('\b' * self.length)
         sys.stdout.flush()
+
+    def exit(self):
+        print('\nDone!\n')

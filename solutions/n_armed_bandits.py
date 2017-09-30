@@ -34,6 +34,7 @@ def learn(epsilon):
         cumRewards[range(numBandits), arm] += reward
         estimates[range(numBandits), arm] = cumRewards[range(numBandits), arm] / activated[range(numBandits), arm]
 
+    ic.exit()
 
     return rewards, isOptimal
 
