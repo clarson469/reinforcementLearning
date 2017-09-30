@@ -2,6 +2,12 @@
 # AIM given a "bandit" with n arms, where each arm yields some reward,
 # learn to optimise the reward yielded by that bandit
 
+# PARAMS (via command-line)
+# @ epsilons -> array of epsilon hyperparameters
+#       entered as comma-deliniated values
+#       default value -> [0, 0.01, 0.1, 1]
+#       N.B. values must be in range 0 <= n <= 1
+
 import numpy as np
 import matplotlib.pyplot as plt
 from util.iter_count import IterCount
@@ -39,13 +45,12 @@ def learn(epsilon):
     return rewards, isOptimal
 
 
-def run():
-    epsilons = [0, 0.01, 0.1, 1]
-    colors = ['-g', '-b', '-k', '-m']
+def run(epsilons):
+    cmap = plt.cm.get_cmap('jet', len(epsilons))
     for i, epsilon in enumerate(epsilons):
         print('Learning with epsilon = {}'.format(epsilon))
         rewards, isOptimal = learn(epsilon)
-        plt.plot(range(1000), np.mean(rewards, axis=0), colors[i])
+        plt.plot(range(1000), np.mean(rewards, axis=0), c=cmap(i))
 
-    plt.legend(['Epsilon: 0', 'Epsilon: 0.01', 'Epsilon: 0.1', 'Epsilon: 1'])
+    plt.legend(['Epsilon: {}'.format(e) for e in epsilons])
     plt.show()
