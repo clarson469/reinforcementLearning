@@ -1,18 +1,24 @@
-# simplest N-armed bandits problem / solution (see: Sutton, Barto Chapter 2.2)
-# AIM given a "bandit" with n arms, where each arm yields some reward,
-# learn to optimise the reward yielded by that bandit
+# same as "n_armed_bandits" problem, but adding a softmax function
+# to guide exploratory selections
+# softmax regulated by "temperature" hyperparameter,
+# where a higher temperature value equates an essentially random selection
+# while a lower temperature weights better estimated actions higher
 
 # PARAMS (via command-line)
-# @ epsilons -> array of epsilon hyperparameters
+# @ temperatures -> array of temperature hyperparameters
 #       entered as comma-deliniated values
-#       default value -> [0, 0.01, 0.1, 1.0]
-#       N.B. values must be in range 0 <= n <= 1
+#       default value -> [0.1, 0.5, 1.0]
+#       N.B. this must be a positive value
 
 import numpy as np
 import matplotlib.pyplot as plt
 from util.iter_count import IterCount
 
-def learn(epsilon):
+def softmax(estimates, temp):
+    probs = np.exp(estimates / temp) / np.sum(np.exp(estimates / temp), axis=0)
+    return np.argmax(probs, axis=1)
+
+def learn(temperature):
     numBandits, numArms, numPlays = (2000, 10, 1000)
     bandits = np.random.normal(0, 1, (numBandits, numArms))
     best = np.argmax(bandits, axis=1)
@@ -27,10 +33,7 @@ def learn(epsilon):
 
         ic.update()
 
-        explore = np.zeros(numBandits)
-        explore[np.random.random(numBandits) <= epsilon] = 1
-        arm = np.argmax(estimates, axis=1)
-        arm[explore == 1] = np.random.randint(0, numArms, np.count_nonzero(explore))
+        arm = softmax(estimates, temperature)
 
         isOptimal[:, i][arm == best] = 1
         reward = np.random.normal(0, 1, numBandits) + bandits[range(numBandits), arm]
@@ -44,13 +47,12 @@ def learn(epsilon):
 
     return rewards, isOptimal
 
-
-def run(epsilons):
-    cmap = plt.cm.get_cmap('jet', len(epsilons))
-    for i, epsilon in enumerate(epsilons):
-        print('Learning with epsilon = {}'.format(epsilon))
-        rewards, isOptimal = learn(epsilon)
+def run(temperatures):
+    cmap = plt.cm.get_cmap('jet', len(temperatures))
+    for i, temperature in enumerate(temperatures):
+        print('Learning with temperature = {}'.format(temperature))
+        rewards, isOptimal = learn(temperature)
         plt.plot(range(1000), np.mean(rewards, axis=0), c=cmap(i))
 
-    plt.legend(['Epsilon: {}'.format(e) for e in epsilons])
+    plt.legend(['Temperature: {}'.format(t) for t in temperatures])
     plt.show()
