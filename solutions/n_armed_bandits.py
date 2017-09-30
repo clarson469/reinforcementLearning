@@ -1,5 +1,6 @@
 # simplest N-armed bandits problem / solution (see: Sutton, Barto Chapter 2.2)
-
+# AIM given a "bandit" with n arms, where each arm yields some reward,
+# learn to optimise the reward yielded by that bandit
 
 import sys
 import numpy as np
