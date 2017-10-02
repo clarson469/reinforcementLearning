@@ -13,10 +13,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from util.iter_count import IterCount
-
-def softmax(estimates, temp):
-    probs = np.exp(estimates / temp) / np.sum(np.exp(estimates / temp), axis=0)
-    return np.argmax(probs, axis=1)
+from .solution_util import softmax
 
 def learn(temperature):
     numBandits, numArms, numPlays = (2000, 10, 1000)
