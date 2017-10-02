@@ -1,3 +1,12 @@
+# same as "n_armed_bandits_softmax", but using incremental action values
+# instead of averaging cumulative rewards to determine reward estimates
+
+# PARAMS (via command-line)
+# @ temperatures -> array of temperature hyperparameters
+#       entered as comma-deliniated values
+#       default value -> [0.1, 0.5, 1.0]
+#       N.B. this must be a positive value
+
 import numpy as np
 import matplotlib.pyplot as plt
 from util.iter_count import IterCount
