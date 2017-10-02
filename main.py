@@ -21,5 +21,12 @@ def main():
             temperatures = [float(t) for t in sys.argv[2].split(',')]
         n_armed_bandits_softmax.run(temperatures)
 
+    elif sys.argv[1] == 'n_armed_bandits_incremental':
+        if arg_len == 2:
+            temperatures = [0.1, 0.5, 1.0]
+        else:
+            temperatures=  [float(t) for t in sys.argv[2].split(',')]
+        n_armed_bandits_incremental.run(temperatures)
+
 if __name__ == '__main__':
     main()
