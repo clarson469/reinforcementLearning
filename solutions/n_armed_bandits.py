@@ -12,8 +12,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from util.iter_count import IterCount
 
+from settings import n_armed_bandits as config
+
 def learn(epsilon):
-    numBandits, numArms, numPlays = (2000, 10, 1000)
+    numBandits, numArms, numPlays = (config['numBandits'], config['numArms'], config['numPlays'])
     bandits = np.random.normal(0, 1, (numBandits, numArms))
     best = np.argmax(bandits, axis=1)
     estimates, activated, cumRewards = [np.zeros(bandits.shape) for i in range(3)]
@@ -46,11 +48,15 @@ def learn(epsilon):
 
 
 def run(epsilons):
+
+    print('Running with settings:')
+    print('\tnumBandits: {0}\tnumArms: {1}\tnumPlays: {2}\n'.format(config['numBandits'], config['numArms'], config['numPlays']))
+
     cmap = plt.cm.get_cmap('jet', len(epsilons))
     for i, epsilon in enumerate(epsilons):
         print('Learning with epsilon = {}'.format(epsilon))
         rewards, isOptimal = learn(epsilon)
-        plt.plot(range(1000), np.mean(rewards, axis=0), c=cmap(i))
+        plt.plot(range(config['numPlays']), np.mean(rewards, axis=0), c=cmap(i))
 
     plt.legend(['Epsilon: {}'.format(e) for e in epsilons])
     plt.show()

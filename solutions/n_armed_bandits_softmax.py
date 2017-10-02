@@ -15,8 +15,10 @@ import matplotlib.pyplot as plt
 from util.iter_count import IterCount
 from .solution_util import softmax
 
+from settings import n_armed_bandits as config
+
 def learn(temperature):
-    numBandits, numArms, numPlays = (2000, 10, 1000)
+    numBandits, numArms, numPlays = (config['numBandits'], config['numArms'], config['numPlays'])
     bandits = np.random.normal(0, 1, (numBandits, numArms))
     best = np.argmax(bandits, axis=1)
     estimates, activated, cumRewards = [np.zeros(bandits.shape) for i in range(3)]
@@ -45,11 +47,15 @@ def learn(temperature):
     return rewards, isOptimal
 
 def run(temperatures):
+
+    print('Running with settings:')
+    print('\tnumBandits: {0}\tnumArms: {1}\tnumPlays: {2}\n'.format(config['numBandits'], config['numArms'], config['numPlays']))
+
     cmap = plt.cm.get_cmap('jet', len(temperatures))
     for i, temperature in enumerate(temperatures):
         print('Learning with temperature = {}'.format(temperature))
         rewards, isOptimal = learn(temperature)
-        plt.plot(range(1000), np.mean(rewards, axis=0), c=cmap(i))
+        plt.plot(range(config['numPlays']), np.mean(rewards, axis=0), c=cmap(i))
 
     plt.legend(['Temperature: {}'.format(t) for t in temperatures])
     plt.show()
