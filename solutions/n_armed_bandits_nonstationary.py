@@ -13,6 +13,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
 from util.iter_count import IterCount
 from .solution_util import softmax
 
@@ -65,18 +66,28 @@ def run(alphas):
     print('Running with settings:')
     print('\tnumBandits: {0}\tnumArms: {1}\tnumPlays: {2}\n'.format(config['numBandits'], config['numArms'], config['numPlays']))
 
+    fig = plt.figure(1, (8,8))
+    reward_plot = fig.add_subplot(211)
+    optimal_plot = fig.add_subplot(212)
+
     temperature = 0.1
     cmap = plt.cm.get_cmap('jet', len(alphas) + 1)
 
     print('Learning with sample-average action value estimate')
     rewards, isOptimal = learn('sample-average', None, temperature)
-    plt.plot(range(config['numPlays']), np.mean(rewards, axis=0), c=cmap(0))
+    reward_plot.plot(range(config['numPlays']), np.mean(rewards, axis=0), c=cmap(0))
+    optimal_plot.plot(range(config['numPlays']), np.mean(isOptimal, axis=0) * 100, c=cmap(0))
 
     print('Learning with nonstationary action value estimate')
     for i, alpha in enumerate(alphas):
         print('Learning with alpha = {}'.format(alpha))
         rewards, isOptimal = learn('nonstationary', alpha, temperature)
-        plt.plot(range(config['numPlays']), np.mean(rewards, axis=0), c=cmap(i+1))
+        reward_plot.plot(range(config['numPlays']), np.mean(rewards, axis=0), c=cmap(i+1))
+        optimal_plot.plot(range(config['numPlays']), np.mean(isOptimal, axis=0) * 100, c=cmap(i+1))
 
-    plt.legend(['Sample-Average'] + ['Alpha: {}'.format(a) for a in alphas])
+    reward_plot.legend(['Sample-Average'] + ['Alpha: {}'.format(a) for a in alphas])
+    optimal_plot.legend(['Sample-Average'] + ['Alpha: {}'.format(a) for a in alphas])
+
+    yticks = mtick.FormatStrFormatter('%.0f%%')
+    optimal_plot.yaxis.set_major_formatter(yticks)
     plt.show()

@@ -10,6 +10,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
 from util.iter_count import IterCount
 
 from settings import n_armed_bandits as config
@@ -52,11 +53,20 @@ def run(epsilons):
     print('Running with settings:')
     print('\tnumBandits: {0}\tnumArms: {1}\tnumPlays: {2}\n'.format(config['numBandits'], config['numArms'], config['numPlays']))
 
+    fig = plt.figure(1, (8,8))
+    reward_plot = fig.add_subplot(211)
+    optimal_plot = fig.add_subplot(212)
+
     cmap = plt.cm.get_cmap('jet', len(epsilons))
     for i, epsilon in enumerate(epsilons):
         print('Learning with epsilon = {}'.format(epsilon))
         rewards, isOptimal = learn(epsilon)
-        plt.plot(range(config['numPlays']), np.mean(rewards, axis=0), c=cmap(i))
+        reward_plot.plot(range(config['numPlays']), np.mean(rewards, axis=0), c=cmap(i))
+        optimal_plot.plot(range(config['numPlays']), np.mean(isOptimal, axis=0) * 100, c=cmap(i))
 
-    plt.legend(['Epsilon: {}'.format(e) for e in epsilons])
+    reward_plot.legend(['Epsilon: {}'.format(e) for e in epsilons])
+    optimal_plot.legend(['Epsilon: {}'.format(e) for e in epsilons])
+
+    yticks = mtick.FormatStrFormatter('%.0f%%')
+    optimal_plot.yaxis.set_major_formatter(yticks)
     plt.show()
