@@ -28,5 +28,13 @@ def main():
             temperatures=  [float(t) for t in sys.argv[2].split(',')]
         n_armed_bandits_incremental.run(temperatures)
 
+    elif sys.argv[1] == 'n_armed_bandits_nonstationary':
+        if arg_len == 2:
+            alphas = [0.01, 0.1, 1.0]
+        else:
+            alphas = [float(a) for a in sys.arv[2].split(',')]
+        n_armed_bandits_nonstationary.run(alphas)
+
+
 if __name__ == '__main__':
     main()

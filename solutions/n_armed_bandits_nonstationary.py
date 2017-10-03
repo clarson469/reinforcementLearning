@@ -1,3 +1,16 @@
+# modifies the N-armed Bandits problem into a non-stationary one
+# that is, where the reward value of the bandit arms shifts randomly
+#
+# compares the use of a sample-average estimate method (used in previous soutions)
+# with a non-stationary one, that weights more recent information / rewards
+# more heavily than less recent
+
+# PARAMS (via command-line)
+# @ alphas -> array of alpha hyperparameters
+#       entered as comma-deliniated values
+#       default value -> [0.01, 0.1, 1.0]
+#       N.B. values must satisfy 0 < a <= 1
+
 import numpy as np
 import matplotlib.pyplot as plt
 from util.iter_count import IterCount
@@ -24,7 +37,7 @@ def learn(action_value, alpha, temperature):
 
         ic.update()
 
-        bandits += np.random.random(bandits.shape) * 2 - 1
+        bandits += np.random.normal(0, 0.2, (bandits.shape))
 
         best = np.argmax(bandits, axis=1)
 
@@ -47,25 +60,23 @@ def learn(action_value, alpha, temperature):
     return rewards, isOptimal
 
 
-def run(action_value, alphas):
+def run(alphas):
 
     print('Running with settings:')
     print('\tnumBandits: {0}\tnumArms: {1}\tnumPlays: {2}\n'.format(config['numBandits'], config['numArms'], config['numPlays']))
 
-    temperature = 0.5
-    if action_value == 'sample-average':
-        print('Learning with sample-average action value estimate')
-        rewards, isOptimal = learn(action_value, None, temperature)
-        plt.plot(range(config['numPlays']), np.mean(rewards, axis=0), '-b')
-        plt.title('Sample Average Action Value Estimates')
-        plt.show()
-    else:
-        cmap = plt.cm.get_cmap('jet', len(alphas))
-        for i, alpha in enumerate(alphas):
-            print('Learning with alpha = {}'.format(alpha))
-            rewards, isOptimal = learn(action_value, alpha, temperature)
-            plt.plot(range(config['numPlays']), np.mean(rewards, axis=0), c=cmap(i))
+    temperature = 0.1
+    cmap = plt.cm.get_cmap('jet', len(alphas) + 1)
 
-        plt.title('NonStationary Action Value Estimate')
-        plt.legend(['Alpha: {}'.format(a) for a in alphas])
-        plt.show()
+    print('Learning with sample-average action value estimate')
+    rewards, isOptimal = learn('sample-average', None, temperature)
+    plt.plot(range(config['numPlays']), np.mean(rewards, axis=0), c=cmap(0))
+
+    print('Learning with nonstationary action value estimate')
+    for i, alpha in enumerate(alphas):
+        print('Learning with alpha = {}'.format(alpha))
+        rewards, isOptimal = learn('nonstationary', alpha, temperature)
+        plt.plot(range(config['numPlays']), np.mean(rewards, axis=0), c=cmap(i+1))
+
+    plt.legend(['Sample-Average'] + ['Alpha: {}'.format(a) for a in alphas])
+    plt.show()
