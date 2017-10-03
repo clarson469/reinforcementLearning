@@ -15,9 +15,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 from util.iter_count import IterCount
+from util.cmap import colormap
 from .solution_util import softmax
 
-from settings import n_armed_bandits as config
+import settings
+
+config = settings.n_armed_bandits
 
 def learn(action_value, alpha, temperature):
 
@@ -71,7 +74,7 @@ def run(alphas):
     optimal_plot = fig.add_subplot(212)
 
     temperature = 0.1
-    cmap = plt.cm.get_cmap('jet', len(alphas) + 1)
+    cmap = colormap(len(alphas) + 1)
 
     print('Learning with sample-average action value estimate')
     rewards, isOptimal = learn('sample-average', None, temperature)

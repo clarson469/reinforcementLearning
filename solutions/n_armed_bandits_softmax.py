@@ -14,9 +14,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 from util.iter_count import IterCount
+from util.cmap import colormap
 from .solution_util import softmax
 
-from settings import n_armed_bandits as config
+import settings
+
+config = settings.n_armed_bandits
 
 def learn(temperature):
     numBandits, numArms, numPlays = (config['numBandits'], config['numArms'], config['numPlays'])
@@ -56,7 +59,7 @@ def run(temperatures):
     reward_plot = fig.add_subplot(211)
     optimal_plot = fig.add_subplot(212)
 
-    cmap = plt.cm.get_cmap('jet', len(temperatures))
+    cmap = colormap(len(temperatures))
     for i, temperature in enumerate(temperatures):
         print('Learning with temperature = {}'.format(temperature))
         rewards, isOptimal = learn(temperature)
