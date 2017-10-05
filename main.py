@@ -42,6 +42,9 @@ def main():
             init_values = [float(i) for i in sys.argv[2].split(',')]
         n_armed_bandits_optimistic.run(init_values)
 
+    elif sys.argv[1] == 'n_armed_bandits_comparison':
+        n_armed_bandits_comparison.run()
+
 
 if __name__ == '__main__':
     main()
