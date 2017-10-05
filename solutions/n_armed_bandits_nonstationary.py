@@ -35,7 +35,7 @@ def learn(action_value, alpha, temperature):
 
     rewards, isOptimal = [np.zeros((numBandits, numPlays)) for i in range(2)]
 
-    ic = IterCount('Play numer {0} of {1}'.format("{}", numPlays))
+    ic = IterCount('Play number {0} of {1}'.format("{}", numPlays))
 
     for i in range(numPlays):
 
