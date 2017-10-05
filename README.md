@@ -6,6 +6,7 @@ Solutions (such as they are) for Sutton and Barto's "Reinforcement Learning: An 
  * N-armed Bandit example with softmax, as per Chapter 2.3
  * N-armed Bandit with incremental action value, as per Chapter 2.5
  * A non-stationary version of the N-armed Bandit problem, with a modified action value estimate to handle it, as per Chapter 2.6
+ * Optimistic Inital Estimates for the N-armed Bandit problem, as per Chapter 2.7
 
 ## Running
 Run main.py, with the name of whichever solution you want to run as a command-line argument, plus any additional arguments the solution may require (see the solution files individually for those)

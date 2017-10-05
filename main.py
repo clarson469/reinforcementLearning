@@ -35,6 +35,13 @@ def main():
             alphas = [float(a) for a in sys.arv[2].split(',')]
         n_armed_bandits_nonstationary.run(alphas)
 
+    elif sys.argv[1] == 'n_armed_bandits_optimistic':
+        if arg_len == 2:
+            init_values = [0.0, 1.0, 5.0]
+        else:
+            init_values = [float(i) for i in sys.argv[2].split(',')]
+        n_armed_bandits_optimistic.run(init_values)
+
 
 if __name__ == '__main__':
     main()
