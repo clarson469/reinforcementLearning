@@ -48,7 +48,7 @@ def learn(temperature, alpha, init_value):
     return rewards, isOptimal
 
 def run(init_values):
-    temperature, alpha = 0.5, 0.1
+    temperature, alpha = 0.1, 0.1
 
     fig = plt.figure(1, (8,8))
     reward_plot = fig.add_subplot(211)

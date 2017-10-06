@@ -7,8 +7,8 @@
 # PARAMS (via command-line)
 # @ temperatures -> array of temperature hyperparameters
 #       entered as comma-deliniated values
-#       default value -> [0.1, 0.5, 1.0]
-#       N.B. this must be a positive value
+#       default value -> [0.01, 0.03, 0.1]
+#       N.B. this must be a positive value (and should be above 0.01 to avoid math errors)
 
 import numpy as np
 import matplotlib.pyplot as plt
