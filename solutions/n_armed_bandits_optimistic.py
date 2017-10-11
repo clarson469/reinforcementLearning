@@ -10,13 +10,13 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 from util.iter_count import IterCount
 from util.cmap import colormap
-from .solution_util import softmax
+from .solution_util import e_greedy
 
 import settings
 
 config = settings.n_armed_bandits
 
-def learn(temperature, alpha, init_value):
+def learn(epsilon, alpha, init_value):
 
     numBandits, numArms, numPlays = (config['numBandits'], config['numArms'], config['numPlays'])
 
@@ -34,7 +34,7 @@ def learn(temperature, alpha, init_value):
 
         ic.update()
 
-        arm = softmax(estimates, temperature)
+        arm = e_greedy(estimates, epsilon)
 
         isOptimal[:, i][arm == best] = 1
         reward = np.random.normal(0, 1, numBandits) + bandits[range(numBandits), arm]
@@ -48,7 +48,7 @@ def learn(temperature, alpha, init_value):
     return rewards, isOptimal
 
 def run(init_values):
-    temperature, alpha = 0.1, 0.1
+    epsilon, alpha = 0.1, 0.1
 
     fig = plt.figure(1, (8,8))
     reward_plot = fig.add_subplot(211)
@@ -58,7 +58,7 @@ def run(init_values):
 
     for i, init_value in enumerate(init_values):
         print('Learning with init_value = {}'.format(init_value))
-        rewards, isOptimal = learn(temperature, alpha, init_value)
+        rewards, isOptimal = learn(epsilon, alpha, init_value)
         reward_plot.plot(range(config['numPlays']), np.mean(rewards, axis=0), c=cmap(i))
         optimal_plot.plot(range(config['numPlays']), np.mean(isOptimal, axis=0) * 100, c=cmap(i))
 

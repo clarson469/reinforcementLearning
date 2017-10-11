@@ -16,13 +16,13 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 from util.iter_count import IterCount
 from util.cmap import colormap
-from .solution_util import softmax
+from .solution_util import e_greedy
 
 import settings
 
 config = settings.n_armed_bandits
 
-def learn(action_value, alpha, temperature):
+def learn(action_value, alpha, epsilon):
 
     numBandits, numArms, numPlays = (config['numBandits'], config['numArms'], config['numPlays'])
 
@@ -45,7 +45,7 @@ def learn(action_value, alpha, temperature):
 
         best = np.argmax(bandits, axis=1)
 
-        arm = softmax(estimates, temperature)
+        arm = e_greedy(estimates, epsilon)
 
         isOptimal[:, i][arm == best] = 1
         reward = np.random.normal(0, 1, numBandits) + bandits[range(numBandits), arm]
@@ -73,18 +73,18 @@ def run(alphas):
     reward_plot = fig.add_subplot(211)
     optimal_plot = fig.add_subplot(212)
 
-    temperature = 0.1
+    epsilon = 0.1
     cmap = colormap(len(alphas) + 1)
 
     print('Learning with sample-average action value estimate')
-    rewards, isOptimal = learn('sample-average', None, temperature)
+    rewards, isOptimal = learn('sample-average', None, epsilon)
     reward_plot.plot(range(config['numPlays']), np.mean(rewards, axis=0), c=cmap(0))
     optimal_plot.plot(range(config['numPlays']), np.mean(isOptimal, axis=0) * 100, c=cmap(0))
 
     print('Learning with nonstationary action value estimate')
     for i, alpha in enumerate(alphas):
         print('Learning with alpha = {}'.format(alpha))
-        rewards, isOptimal = learn('nonstationary', alpha, temperature)
+        rewards, isOptimal = learn('nonstationary', alpha, epsilon)
         reward_plot.plot(range(config['numPlays']), np.mean(rewards, axis=0), c=cmap(i+1))
         optimal_plot.plot(range(config['numPlays']), np.mean(isOptimal, axis=0) * 100, c=cmap(i+1))
 
