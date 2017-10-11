@@ -1,10 +1,10 @@
-# same as "n_armed_bandits_softmax", but using incremental action values
+# same as "n_armed_bandits", but using incremental action values
 # instead of averaging cumulative rewards to determine reward estimates
 
 # PARAMS (via command-line)
-# @ temperatures -> array of temperature hyperparameters
+# @ epsilons -> array of epsilon hyperparameters
 #       entered as comma-deliniated values
-#       default value -> [0.01, 0.03, 0.1]
+#       default value -> [0.0, 0.01, 0.1, 1.0]
 #       N.B. this must be a positive value
 
 import numpy as np
@@ -12,13 +12,13 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 from util.iter_count import IterCount
 from util.cmap import colormap
-from .solution_util import softmax
+from .solution_util import e_greedy
 
 import settings
 
 config = settings.n_armed_bandits
 
-def learn(temperature):
+def learn(epsilon):
 
     numBandits, numArms, numPlays = (config['numBandits'], config['numArms'], config['numPlays'])
 
@@ -35,7 +35,7 @@ def learn(temperature):
 
         ic.update()
 
-        arm = softmax(estimates, temperature)
+        arm = e_greedy(estimates, epsilon)
 
         isOptimal[:, i][arm == best] = 1
         reward = np.random.normal(0, 1, numBandits) + bandits[range(numBandits), arm]
@@ -49,7 +49,7 @@ def learn(temperature):
     return rewards, isOptimal
 
 
-def run(temperatures):
+def run(epsilons):
 
     print('Running with settings:')
     print('\tnumBandits: {0}\tnumArms: {1}\tnumPlays: {2}\n'.format(config['numBandits'], config['numArms'], config['numPlays']))
@@ -58,15 +58,15 @@ def run(temperatures):
     reward_plot = fig.add_subplot(211)
     optimal_plot = fig.add_subplot(212)
 
-    cmap = colormap(len(temperatures))
-    for i, temperature in enumerate(temperatures):
-        print('Learning with temperature = {}'.format(temperature))
-        rewards, isOptimal = learn(temperature)
+    cmap = colormap(len(epsilons))
+    for i, epsilon in enumerate(epsilons):
+        print('Learning with epsilon = {}'.format(epsilon))
+        rewards, isOptimal = learn(epsilon)
         reward_plot.plot(range(config['numPlays']), np.mean(rewards, axis=0), c=cmap(i))
         optimal_plot.plot(range(config['numPlays']), np.mean(isOptimal, axis=0) * 100, c=cmap(i))
 
-    reward_plot.legend(['Temperature: {}'.format(t) for t in temperatures])
-    optimal_plot.legend(['Temperature: {}'.format(t) for t in temperatures])
+    reward_plot.legend(['Epsilon: {}'.format(t) for t in epsilons])
+    optimal_plot.legend(['Epsilon: {}'.format(t) for t in epsilons])
 
     yticks = mtick.FormatStrFormatter('%.0f%%')
     optimal_plot.yaxis.set_major_formatter(yticks)

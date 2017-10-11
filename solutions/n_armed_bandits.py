@@ -5,7 +5,7 @@
 # PARAMS (via command-line)
 # @ epsilons -> array of epsilon hyperparameters
 #       entered as comma-deliniated values
-#       default value -> [0, 0.01, 0.1, 1.0]
+#       default value -> [0.0, 0.01, 0.1, 1.0]
 #       N.B. values must be in range 0 <= n <= 1
 
 import numpy as np
