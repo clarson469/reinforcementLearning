@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 from util.iter_count import IterCount
 from util.cmap import colormap
+from .solution_util import e_greedy
 
 import settings
 
@@ -33,10 +34,7 @@ def learn(epsilon):
 
         ic.update()
 
-        explore = np.zeros(numBandits)
-        explore[np.random.random(numBandits) <= epsilon] = 1
-        arm = np.argmax(estimates, axis=1)
-        arm[explore == 1] = np.random.randint(0, numArms, np.count_nonzero(explore))
+        arm = e_greedy(estimates, epsilon)
 
         isOptimal[:, i][arm == best] = 1
         reward = np.random.normal(0, 1, numBandits) + bandits[range(numBandits), arm]
