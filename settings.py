@@ -4,11 +4,11 @@ n_armed_bandits = {
     'numArms': 10,
     'numPlays': 1000,
     # alpha must satisfy 0 < alpha <= 1
-    'alpha': 0.03,
+    'alpha': 0.1,
     # beta must satisfy 0 < beta <= 1
-    'beta': 0.05,
+    'beta': 0.1,
     # init_ref can be any value, but because it gets exponentiated, don't make it too high
-    'init_ref': 5
+    'init_ref': 0
 }
 
 # general variables

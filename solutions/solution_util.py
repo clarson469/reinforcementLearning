@@ -11,11 +11,15 @@ def e_greedy(estimates, epsilon):
     return arm
 
 def softmax(estimates, temperature):
-    probs = (np.exp(estimates / temperature).T / np.sum(np.exp(estimates / temperature), axis=1)).T
-    cumProb = probs.cumsum(axis=1)
-    return (np.random.random(estimates.shape) < cumProb).argmax(axis=1)
+    temp_est = estimates.T / temperature
+    exponents = np.exp(temp_est - np.max(temp_est))
+    dist = exponents / np.sum(exponents, axis=0)
+
+    return (np.random.random(temp_est.shape) < dist.cumsum(axis=0)).argmax(axis=0)
 
 def pref_softmax(preferences):
-    probs = (np.exp(preferences).T / np.sum(np.exp(preferences), axis=1)).T
-    cumProb = probs.cumsum(axis=1)
-    return (np.random.random(preferences.shape) < cumProb).argmax(axis=1)
+    pref = preferences.T
+    exponents = np.exp(pref - np.max(pref))
+    dist = exponents / np.sum(exponents, axis=0)
+
+    return (np.random.random(pref.shape) < dist.cumsum(axis=0)).argmax(axis=0)
